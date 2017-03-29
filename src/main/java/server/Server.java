@@ -1,4 +1,4 @@
-package main.java.server;
+package server;
 
 /**
  * Created by CmdBuddyTeam on 29.03.2017.

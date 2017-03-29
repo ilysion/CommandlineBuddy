@@ -1,7 +1,7 @@
-package main.java.client;
+package client;
 
 /**
- * Created by Starrimus on 29.03.2017.
+ * Created by CmdBuddyTeam on 29.03.2017.
  */
 
 import java.io.*;

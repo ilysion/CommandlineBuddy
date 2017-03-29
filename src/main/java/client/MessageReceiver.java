@@ -1,12 +1,13 @@
-package main.java.client;
+package client;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Created by ilysion on 29.03.2017.
+ * Created by CmdBuddyTeam on 29.03.2017.
  */
+
 public class MessageReceiver implements Runnable{
     private Socket sock;
 
