@@ -9,53 +9,49 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-public class Server implements Runnable {
-    Socket sock;
-
-    public Server(Socket sock) {
-        this.sock = sock;
-    }
-
+public class Server {
     public static void main(String[] args) throws IOException {
+        BlockingQueue<String> messages = new ArrayBlockingQueue<String>(50);
+        List<Socket> connectedClients = new ArrayList<>();
+        HashMap<Socket, DataOutputStream> dos = new HashMap<>();
+        HashMap<Socket, DataInputStream> dis = new HashMap<>();
 
-        try(ServerSocket ss = new ServerSocket(1337)) {
 
+        new Thread(new SendMessage(messages,connectedClients, dos)).start();
+
+        try (ServerSocket serverSocket = new ServerSocket(42031)) {
             while (true) {
-                Socket sock = ss.accept(); // waits for connection
-                System.out.println("*Connection established");
-                new Thread(new Server(sock)).start();
-                System.out.println("New thread started");
-            }
-        }
-    }
-
-    public void run() {
-
-        try (DataOutputStream outstream = new DataOutputStream(sock.getOutputStream());
-             DataInputStream instream = new DataInputStream(sock.getInputStream())) {
-
-            while(true){
-                if(instream.available()>0){
-                    String string = instream.readUTF();
-                    System.out.println("Recieved message: " + string);
-                    outstream.writeUTF(string);
+                try {
+                    Socket socket = serverSocket.accept();
+                    dos.put(socket,new DataOutputStream(socket.getOutputStream()));
+                    dis.put(socket,new DataInputStream(socket.getInputStream()));
+                    new Thread(new ReceiveMessage(messages, socket, dis)).start();
+                    connectedClients.add(socket);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
-
-        } catch (IOException error) {
-            System.out.println("!Error occurred: " + error);
-
-        } finally {
-            System.out.println("in/out stream closed");
-
-            try{
-                sock.close();
-                System.out.println("Socket closed \n");
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        }
+        for (DataOutputStream dataOutputStream : dos.values()) {
+            try {
+                dataOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            catch(IOException e){
-                System.out.println("Cant close socket, stopping server");
-                throw new RuntimeException(e);
+        }
+        for (DataInputStream dataInputStream : dis.values()) {
+            try {
+                dataInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
