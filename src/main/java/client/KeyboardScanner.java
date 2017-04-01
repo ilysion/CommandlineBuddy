@@ -18,13 +18,13 @@ public class KeyboardScanner implements Runnable {
 
     @Override
     public void run(){
-        Scanner keyboard = new Scanner(System.in);
 
-        try(DataOutputStream outstream = new DataOutputStream(sock.getOutputStream())) {
+        try(Scanner keyboard = new Scanner(System.in);DataOutputStream outstream = new DataOutputStream(sock.getOutputStream())) {
             while(true){
-                String input = keyboard.nextLine();
                 try{
-                    outstream.writeUTF(input);
+                    if (keyboard.hasNextLine()) {
+                        outstream.writeUTF(keyboard.nextLine());
+                    }
                 }
                 catch(IOException e){
                     System.out.println("error: " + e);
