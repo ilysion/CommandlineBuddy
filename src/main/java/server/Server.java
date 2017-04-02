@@ -41,7 +41,7 @@ public class Server {
                         dos.get(socket).writeUTF("Enter username: ");
                         String username = dis.get(socket).readUTF();
                         DBgetpw getPw = new DBgetpw();
-                        password = getPw.getUserPw("'" + username + "'");
+                        password = getPw.getUserPw(username);
                         if(password != null){
                             break;
                         }
