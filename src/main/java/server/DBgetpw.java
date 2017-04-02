@@ -59,7 +59,9 @@ public class DBgetpw {
         {
             sqlExcept.printStackTrace();
         }
-        closeDb();
+        finally {
+            closeDb();
+        }
         return pw;
     }
 }
