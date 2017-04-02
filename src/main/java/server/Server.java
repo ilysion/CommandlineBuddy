@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Server {
         List<Socket> connectedClients = new ArrayList<>();
         HashMap<Socket, DataOutputStream> dos = new HashMap<>();
         HashMap<Socket, DataInputStream> dis = new HashMap<>();
+        EncryptPw encrypter = new EncryptPw();
 
 
         new Thread(new SendMessage(messages,connectedClients, dos)).start();
@@ -31,6 +33,35 @@ public class Server {
                     Socket socket = serverSocket.accept();
                     dos.put(socket,new DataOutputStream(socket.getOutputStream()));
                     dis.put(socket,new DataInputStream(socket.getInputStream()));
+
+                    //Login
+                    String password;
+
+                    while(true){
+                        dos.get(socket).writeUTF("Enter username: ");
+                        String username = dis.get(socket).readUTF();
+                        DBgetpw getPw = new DBgetpw();
+                        password = getPw.getUserPw("'" + username + "'");
+                        if(password != null){
+                            break;
+                        }
+                        dos.get(socket).writeUTF("Username doesn't exist! ");
+                    }
+
+                    while(true){
+                        dos.get(socket).writeUTF("Enter password: ");
+                        String enteredPassword = dis.get(socket).readUTF();
+                        enteredPassword = encrypter.encrypt(enteredPassword);
+
+                        if(password.equals(enteredPassword)){
+                            dos.get(socket).writeUTF("Login successful");
+                            break;
+                        }
+                        dos.get(socket).writeUTF("Wrong password!");
+
+
+
+                    }
                     new Thread(new ReceiveMessage(messages, socket, dis)).start();
                     connectedClients.add(socket);
                 } catch (Exception e1) {

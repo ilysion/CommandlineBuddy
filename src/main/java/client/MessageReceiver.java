@@ -23,7 +23,7 @@ public class MessageReceiver implements Runnable{
                 try{
                     if(instream.available()>0){
                         String msg = instream.readUTF();
-                        System.out.println("Recieved message: " + msg);
+                        System.out.println(msg);
                     }
 
                 }
