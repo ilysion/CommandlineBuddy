@@ -9,7 +9,7 @@ import java.sql.*;
 public class DBgetpw {
     private static String dbURL = "jdbc:derby://localhost:1527/BuddyDatabase;user=buddy;password=buddy";
     private static Connection conn = null;
-    private static Statement stmt = null;
+    private static PreparedStatement stmt = null;
     private String pw;
 
     private void connectDb(){
@@ -46,10 +46,11 @@ public class DBgetpw {
     public String getUserPw(String username){
 
         connectDb();
-        try
-        {
-            stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("select * from users where username =" + username);
+        try{
+
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username=?");
+            stmt.setString(1,username);
+            ResultSet results = stmt.executeQuery();
 
             results.next();
             pw = results.getString(2 );

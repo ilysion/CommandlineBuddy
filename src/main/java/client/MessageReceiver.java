@@ -21,11 +21,8 @@ public class MessageReceiver implements Runnable{
         try(DataInputStream instream = new DataInputStream(sock.getInputStream())) {
             while(true){
                 try{
-                    if(instream.available()>0){
-                        String msg = instream.readUTF();
-                        System.out.println(msg);
-                    }
-
+                    String msg = instream.readUTF();
+                    System.out.println(msg);
                 }
                 catch(IOException e){
                     System.out.println("error: " + e);
@@ -36,6 +33,5 @@ public class MessageReceiver implements Runnable{
         catch(IOException e){
             System.out.println("error: " + e);
         }
-
     }
 }
