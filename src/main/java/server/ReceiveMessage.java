@@ -1,11 +1,8 @@
 package server;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -13,12 +10,14 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ReceiveMessage implements Runnable {
     private final Socket socket;
+    private final String username;
     private final BlockingQueue<String> messages;
     private final HashMap<Socket,DataInputStream> dis;
 
-    public ReceiveMessage(BlockingQueue<String> messages, Socket socket, HashMap<Socket, DataInputStream> dis) {
+    public ReceiveMessage(BlockingQueue<String> messages, Socket socket, String username, HashMap<Socket, DataInputStream> dis) {
         this.messages = messages;
         this.socket = socket;
+        this.username = username;
         this.dis = dis;
     }
 
@@ -26,7 +25,7 @@ public class ReceiveMessage implements Runnable {
     public void run() {
         while (true) {
             try {
-                String message = dis.get(socket).readUTF();
+                String message = username + ": " + dis.get(socket).readUTF();
                 messages.put(message);
             } catch (Exception e) {
                 e.printStackTrace();
