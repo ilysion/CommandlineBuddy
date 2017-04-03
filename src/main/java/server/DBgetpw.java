@@ -46,9 +46,9 @@ public class DBgetpw {
     public String getUserPw(String username){
 
         connectDb();
-        try{
-
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username=?");
+        try
+        {
+            stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
             stmt.setString(1,username);
             ResultSet results = stmt.executeQuery();
 
