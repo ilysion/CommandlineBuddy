@@ -5,7 +5,7 @@ Primary to DO list:
 - logging
 - properties file
 
-Seccondary to DO later / ideas
+Secondary to DO list:
 - Chat commands (kick, ban etc)
 - Bots(Spam bots etc)
 - Simple games?
@@ -13,7 +13,7 @@ Seccondary to DO later / ideas
 - Admins/Mods
 - currency for buying some features?
 - Chat groups
-- Notebad thingy for each user
+- Notepad thingy for each user
 - Offline/private messages
 - File sharing
 
