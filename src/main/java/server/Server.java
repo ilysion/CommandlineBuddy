@@ -36,10 +36,11 @@ public class Server {
 
                     //Login
                     String password;
+                    String username;
 
                     while(true){
                         dos.get(socket).writeUTF("Enter username: ");
-                        String username = dis.get(socket).readUTF();
+                        username = dis.get(socket).readUTF();
                         DBgetpw getPw = new DBgetpw();
                         password = getPw.getUserPw(username);
                         if(password != null){
@@ -62,7 +63,7 @@ public class Server {
 
 
                     }
-                    new Thread(new ReceiveMessage(messages, socket, dis)).start();
+                    new Thread(new ReceiveMessage(messages, socket, username, dis)).start();
                     connectedClients.add(socket);
                 } catch (Exception e1) {
                     e1.printStackTrace();
