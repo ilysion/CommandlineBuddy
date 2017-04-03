@@ -25,7 +25,9 @@ public class ReceiveMessage implements Runnable {
     public void run() {
         while (true) {
             try {
-                String message = username + ": " + dis.get(socket).readUTF();
+                Date date = new Date();
+                SimpleDateFormat formattedDate = new SimpleDateFormat("kk;mm");
+                String message = "[" + formattedDate.format(date) + "] " +username + ": " + dis.get(socket).readUTF();
                 messages.put(message);
             } catch (Exception e) {
                 e.printStackTrace();
