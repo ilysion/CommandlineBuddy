@@ -26,9 +26,8 @@ public class ReceiveMessage implements Runnable {
     public void run() {
         while (true) {
             try {
-                if (dis.get(socket).available() > 0){
-                    messages.put(dis.get(socket).readUTF());
-                }
+                String message = dis.get(socket).readUTF();
+                messages.put(message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
