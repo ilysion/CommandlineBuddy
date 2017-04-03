@@ -33,5 +33,4 @@ public class EncryptPw {
     private String base64Encode(byte[] bytes) {
         return new BASE64Encoder().encode(bytes);
     }
-
 }

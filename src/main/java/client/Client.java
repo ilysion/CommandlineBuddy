@@ -17,6 +17,5 @@ public class Client {
 
         KeyboardScanner keyScanner = new KeyboardScanner(sock);
         new Thread(keyScanner).start();
-
     }
 }
