@@ -1,7 +1,7 @@
-Mon Apr 03 12:21:52 EEST 2017 : Apache Derby Network Server - 10.11.1.2 - (1629631) started and ready to accept connections on port 1527
+Wed Apr 05 10:29:13 EEST 2017 : Apache Derby Network Server - 10.11.1.2 - (1629631) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Mon Apr 03 12:22:10 EEST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-015b-331e-dc9c-ffff987312f4 
+Wed Apr 05 10:29:54 EEST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-015b-3d04-72fb-ffff987312f4 
 on database directory C:\Users\ilysionLaptop\Desktop\CMDbuddy\CommandlineBuddy\src\main\DB\BuddyDatabase with class loader sun.misc.Launcher$AppClassLoader@6f94fa3e 
 Loaded from file:/C:/Program%20Files/Java/jdk1.8.0_121/db/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -12,7 +12,3 @@ os.arch=amd64
 os.version=6.1
 derby.system.home=C:\Users\ilysionLaptop\Desktop\CMDbuddy\CommandlineBuddy\src\main\DB
 Database Class Loader started - derby.database.classpath=''
-----------------------------------------------------------------
-Mon Apr 03 12:22:10 EEST 2017:
-Shutting down instance a816c00e-015b-331e-dc9c-ffff987312f4 on database directory C:\Users\ilysionLaptop\Desktop\CMDbuddy\CommandlineBuddy\src\main\DB\BuddyDatabase with class loader sun.misc.Launcher$AppClassLoader@6f94fa3e 
-Mon Apr 03 12:22:10 EEST 2017 Thread[DRDAConnThread_3,5,main] (DATABASE = BuddyDatabase), (DRDAID = {2}), Database 'BuddyDatabase' shutdown.
