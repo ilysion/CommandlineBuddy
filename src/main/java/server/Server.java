@@ -4,6 +4,8 @@ package server;
  * Created by CmdBuddyTeam on 29.03.2017.
  */
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,8 +24,6 @@ public class Server {
         List<Socket> connectedClients = new ArrayList<>();
         HashMap<Socket, DataOutputStream> dos = new HashMap<>();
         HashMap<Socket, DataInputStream> dis = new HashMap<>();
-        EncryptPw encrypter = new EncryptPw();
-
 
         new Thread(new SendMessage(messages,connectedClients, dos)).start();
 
@@ -52,15 +52,13 @@ public class Server {
                     while(true){
                         dos.get(socket).writeUTF("Enter password: ");
                         String enteredPassword = dis.get(socket).readUTF();
-                        enteredPassword = encrypter.encrypt(enteredPassword);
 
-                        if(password.equals(enteredPassword)){
+                        if(BCrypt.checkpw(enteredPassword, password)){
                             dos.get(socket).writeUTF("Login successful");
                             break;
                         }
+
                         dos.get(socket).writeUTF("Wrong password!");
-
-
 
                     }
                     new Thread(new ReceiveMessage(messages, socket, username, dis)).start();
