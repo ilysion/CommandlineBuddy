@@ -11,8 +11,8 @@ public class Client {
     public static void main(String[] args) throws IOException {
         Socket sock = new Socket("localhost", 42031);
 
-        MessageReceiver msgReciever = new MessageReceiver(sock);
-        new Thread(msgReciever).start();
+        MessageReceiver msgReceiever = new MessageReceiver(sock);
+        new Thread(msgReceiever).start();
         System.out.println("message reciever thread started");
 
         KeyboardScanner keyScanner = new KeyboardScanner(sock);
