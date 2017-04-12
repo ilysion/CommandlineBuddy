@@ -9,13 +9,13 @@ import java.net.Socket;
 
 public class Client {
     public static void main(String[] args) throws IOException {
-        Socket sock = new Socket("localhost", 42031);
+        try (Socket sock = new Socket("localhost", 42031)) {
 
-        MessageReceiver msgReceiever = new MessageReceiver(sock);
-        new Thread(msgReceiever).start();
-        System.out.println("message reciever thread started");
+            MessageReceiver msgReceiever = new MessageReceiver(sock);
+            new Thread(msgReceiever).start();
 
-        KeyboardScanner keyScanner = new KeyboardScanner(sock);
-        new Thread(keyScanner).start();
+            KeyboardScanner keyScanner = new KeyboardScanner(sock);
+            new Thread(keyScanner).start();
+        }
     }
 }
