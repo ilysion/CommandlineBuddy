@@ -1,6 +1,5 @@
 package server;
 
-import org.mindrot.jbcrypt.BCrypt;
 import java.io.File;
 import java.sql.*;
 
@@ -9,24 +8,34 @@ import java.sql.*;
  */
 
 public class Database {
-    private static String DBFILE = "server.db";
-    private Connection connection = null;
+    private static Database INSTANCE = null;
+    private final static String DBFILE = "server.db";
 
-    public Database() {
-        init();
+    private Database() {
+        try {
+            init();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Database getDB() {
+        if (INSTANCE == null) {
+            INSTANCE = new Database();
+        }
+        return INSTANCE;
     }
 
     private void init() {
         File file = new File(DBFILE);
         boolean createTable = false;
 
-        try
-        {
-            if (!file.exists()){
+        try {
+            if (!file.exists()) {
                 createTable = true;
             }
 
-            connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE);
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE);
 
             if (createTable) {
                 try {
@@ -35,55 +44,28 @@ public class Database {
                     throw new RuntimeException("Error: Database failed to initialize! " + e);
                 }
             }
-        }
 
-        catch(SQLException e) {
+            connection.close();
+
+        } catch (SQLException e) {
             throw new RuntimeException("Error: Database failed to initialize! " + e);
         }
 
     }
 
-    public void closeDB() {
-        try
-        {
-            if(connection != null) connection.close();
+    public String getPassword(String username) throws Exception {
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?")) {
+                stmt.setString(1, username);
+                try (ResultSet results = stmt.executeQuery()) {
+                    boolean exists = results.next();
+                    if (exists) {
+                        return results.getString("password").replaceAll("\\s+", "");
+                    } else {
+                        return null;
+                    }
+                }
+            }
         }
-        catch(Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean userExists(String username) {
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
-            stmt.setString(1,username);
-            ResultSet results = stmt.executeQuery();
-
-            return results.next();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean checkpw(String username, String password) {
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
-            stmt.setString(1,username);
-            ResultSet results = stmt.executeQuery();
-
-            results.next();
-            String hashFromDB = results.getString(3).replaceAll("\\s+","");
-            results.close();
-
-            System.out.println(BCrypt.checkpw(password, hashFromDB));
-
-            return BCrypt.checkpw(password, hashFromDB);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
     }
 }
