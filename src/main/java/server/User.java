@@ -41,11 +41,11 @@ public class User implements Runnable {
                         break;
                     }
                     else {
-                        dos.writeUTF("Wrong password!");
+                        dos.writeUTF("Invalid login.");
                     }
                 }
                 else {
-                    dos.writeUTF("Username doesn't exist! ");
+                    dos.writeUTF("Invalid login.");
                 }
             }
             while (true) {
