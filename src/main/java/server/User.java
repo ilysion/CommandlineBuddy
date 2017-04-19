@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
@@ -28,34 +29,42 @@ public class User implements Runnable {
     @Override
     public void run() {
         try {
-            while (true) {
-                dos.writeUTF("Username: ");
-                String username = dis.readUTF();
-                dos.writeUTF("Password: ");
-                String password = dis.readUTF();
-                String passwordFromDB = Database.getDB().getPassword(username);
-                if (passwordFromDB != null) {
-                    if (BCrypt.checkpw(password, passwordFromDB)) {
-                        this.username = username;
-                        dos.writeUTF("Login successful!");
-                        break;
-                    }
-                    else {
-                        dos.writeUTF("Invalid login.");
-                    }
+            waitForLogin();
+            listenToMessages();
+        } catch (IOException | SQLException | InterruptedException e1) {
+            throw new RuntimeException(e1);
+        }
+    }
+
+    private void listenToMessages() throws IOException, InterruptedException {
+        while (true) {
+            Date date = new Date();
+            SimpleDateFormat formattedDate = new SimpleDateFormat("kk:mm");
+            String message = "[" + formattedDate.format(date) + "] " + username + ": " + dis.readUTF();
+            messages.put(message);
+        }
+    }
+
+    private void waitForLogin() throws IOException, SQLException {
+        while (true) {
+            dos.writeUTF("Username: ");
+            String username = dis.readUTF();
+            dos.writeUTF("Password: ");
+            String password = dis.readUTF();
+            String passwordFromDB = Database.getDB().getPassword(username);
+            if (passwordFromDB != null) {
+                if (BCrypt.checkpw(password, passwordFromDB)) {
+                    this.username = username;
+                    dos.writeUTF("Login successful!");
+                    break;
                 }
                 else {
                     dos.writeUTF("Invalid login.");
                 }
             }
-            while (true) {
-                Date date = new Date();
-                SimpleDateFormat formattedDate = new SimpleDateFormat("kk:mm");
-                String message = "[" + formattedDate.format(date) + "] " + username + ": " + dis.readUTF();
-                messages.put(message);
+            else {
+                dos.writeUTF("Invalid login.");
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }
