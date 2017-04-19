@@ -11,10 +11,6 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created on 2017-04-01.
- */
-
 public class User implements Runnable {
     private final Socket socket;
     private final BlockingQueue<String> messages;
@@ -22,7 +18,7 @@ public class User implements Runnable {
     private DataInputStream dis;
     private String username;
 
-    public User(BlockingQueue<String> messages, Socket socket, ConcurrentHashMap<Socket, DataOutputStream> dos, ConcurrentHashMap<Socket, DataInputStream> dis) throws IOException {
+    User(BlockingQueue<String> messages, Socket socket, ConcurrentHashMap<Socket, DataOutputStream> dos, ConcurrentHashMap<Socket, DataInputStream> dis) throws IOException {
         this.messages = messages;
         this.socket = socket;
         this.dos = dos.get(this.socket);
@@ -31,42 +27,35 @@ public class User implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            try {
+        try {
+            while (true) {
                 dos.writeUTF("Username: ");
                 String username = dis.readUTF();
-
                 dos.writeUTF("Password: ");
                 String password = dis.readUTF();
-
                 String passwordFromDB = Database.getDB().getPassword(username);
-
                 if (passwordFromDB != null) {
                     if (BCrypt.checkpw(password, passwordFromDB)) {
                         this.username = username;
                         dos.writeUTF("Login successful!");
                         break;
-                    } else {
+                    }
+                    else {
                         dos.writeUTF("Wrong password!");
                     }
-
-                } else {
+                }
+                else {
                     dos.writeUTF("Username doesn't exist! ");
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
-        }
-
-        while (true) {
-            try {
+            while (true) {
                 Date date = new Date();
                 SimpleDateFormat formattedDate = new SimpleDateFormat("kk:mm");
                 String message = "[" + formattedDate.format(date) + "] " + username + ": " + dis.readUTF();
                 messages.put(message);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
