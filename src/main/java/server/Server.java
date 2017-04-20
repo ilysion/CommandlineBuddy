@@ -14,12 +14,13 @@ import java.util.*;
 public class Server implements Runnable {
     private final static int PORT = 1337;
     private final ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-    private Selector selector = Selector.open();
+    private final Selector selector = Selector.open();
     private final Map<SocketChannel, byte[]> messages = new HashMap<>();
     private final Set<SocketChannel> channels = new HashSet<>();
 
     private Server() throws IOException {
         try {
+
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
 
