@@ -9,8 +9,9 @@ class Database {
 
     private Database() throws SQLException {
         File file = new File(DBFILE);
+        boolean createTable = !file.exists();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
-            if (!file.exists()) {
+            if (createTable) {
                 connection.createStatement().executeUpdate("create table user (id integer PRIMARY KEY AUTOINCREMENT, name string, password string)");
             }
         }
@@ -26,8 +27,8 @@ class Database {
     String getPassword(String username) throws SQLException {
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
-            ResultSet results = stmt.executeQuery();
             stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
             if (results.next()) {
                 return results.getString("password").replaceAll("\\s+", "");
             }
