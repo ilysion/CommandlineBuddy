@@ -13,6 +13,7 @@ import java.util.*;
 
 public class Server implements Runnable {
     private final static int PORT = 1337;
+
     private final ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
     private final Selector selector = Selector.open();
     private final Map<SocketChannel, byte[]> messages = new HashMap<>();
@@ -93,39 +94,41 @@ public class Server implements Runnable {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = ByteBuffer.allocate(1000);
 
-        int read = socketChannel.read(buf);
+        try {
+            int read = socketChannel.read(buf);
 
-        buf.flip();
+            buf.flip();
 
-        byte[] temp = new byte[1000];
-        buf.get(temp, 0, read);
+            byte[] temp = new byte[1000];
+            buf.get(temp, 0, read);
 
-        if (new String(temp).charAt(0) == '/') {
-            //TODO commands
-        } else {
-            this.messages.put(socketChannel, temp);
-            socketChannel.register(this.selector, SelectionKey.OP_WRITE);
+            if (new String(temp).charAt(0) == '/') {
+                //TODO commands
+            } else {
+                Date date = new Date();
+                SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
+                String msg = formattedDate.format(date) + new String(temp).replaceAll("\\s+", "");;
+                temp = msg.getBytes();
+
+                for (SocketChannel channel : channels) {
+                    this.messages.put(channel, temp);
+                    channel.register(this.selector, SelectionKey.OP_WRITE);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Client socket closed");
+            socketChannel.close();
+            channels.remove(socketChannel);
         }
 
     }
 
     private void write(SelectionKey key) throws IOException {
         System.out.println("Sending message to users!");
-
         SocketChannel socketChannel = (SocketChannel) key.channel();
-
         byte[] message = this.messages.get(socketChannel);
-
-        Date date = new Date();
-        SimpleDateFormat formattedDate = new SimpleDateFormat("kk;mm");
-        String temp = formattedDate.format(date) + " | " + new String(message);
-
-        message = temp.getBytes();
-
-        for (SocketChannel channel : channels) {
-            channel.write(ByteBuffer.wrap(message));
-        }
-
+        socketChannel.write(ByteBuffer.wrap(message));
         socketChannel.register(this.selector, SelectionKey.OP_READ);
     }
 
