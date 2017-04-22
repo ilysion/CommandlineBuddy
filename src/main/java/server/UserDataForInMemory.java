@@ -1,8 +1,8 @@
 package server;
 
 public class UserDataForInMemory {
-    private String username;
-    private SingleConnectionBundle bundle;
+    private final String username;
+    private final SingleConnectionBundle bundle;
 
     public UserDataForInMemory(String username, SingleConnectionBundle bundle) {
         this.username = username;

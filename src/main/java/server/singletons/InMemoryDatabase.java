@@ -9,7 +9,7 @@ import java.util.Set;
 
 /*This is a singleton.*/
 public class InMemoryDatabase {
-    private Set<UserDataForInMemory> connectedUserDataForInMemories;
+    private final Set<UserDataForInMemory> connectedUserDataForInMemories;
     private static InMemoryDatabase IN_MEMORY_DATABASE_INSTANCE = null;
 
     private InMemoryDatabase() {
@@ -22,6 +22,7 @@ public class InMemoryDatabase {
         return getInMemoryDatabase().connectedUserDataForInMemories.add(userDataForInMemory);
     }
 
+    //TODO: THIS METHOD IS NEVER USED, SO IT SEEMS THAT I FORGOT TO USE IT. IT SHOULD BE USED WHENEVER AN USER GETS DISCONNECTED FROM THE SERVER.
     public static synchronized boolean safeRemove(UserDataForInMemory userDataForInMemory) {
         return getInMemoryDatabase().connectedUserDataForInMemories.remove(userDataForInMemory);
     }

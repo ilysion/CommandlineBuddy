@@ -38,6 +38,7 @@ public class ServerProperties {
         return getServerProperties().portValue;
     }
 
+    //TODO: SEEMS THAT I FORGOT TO IMPLEMENT MAX_CONNECTIONS_VALUE. IT SHOULD BE USED TO PREVENT NEW USERS FROM CONNECTING WHEN THE MAX IS REACHED (BUT AN EXCEPTION FOR ADMIN AND MODS?).
     static int getMaxConnectionsValue() throws IOException {
         return getServerProperties().maxConnectionsValue;
     }

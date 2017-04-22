@@ -12,6 +12,7 @@ public class SendMessageAnalyzer implements CommandAnalyzer {
         return splittedUserInput[0] == "send";
     }
 
+    //TODO: THERE SHOULD DEFINITELY BE A MAX CHARACTER COUNT. OTHERWISE IT WILL BE EASY TO CRASH SERVER. THIS MUST BE IMPLEMENTED.
     @Override
     public String analyze(UserDataForInMemory userData, String[] splittedUserInput) {
         UserStanding userStanding = Database.getUserStanding(userData.getUsername());

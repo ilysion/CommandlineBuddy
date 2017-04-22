@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+//TODO: I PROPOSE THAT THE CLIENT-SIDE (everything in the client package) SHOULD EVENTUALLY BE MOVED INTO A DIFFERENT PROJECT FROM THE SERVER-SIDE.
+class Client {
     public static void main(String[] args) throws IOException {
         try (Socket socket = new Socket("localhost", 42031);
              Scanner keyboard = new Scanner(System.in);

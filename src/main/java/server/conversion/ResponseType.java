@@ -16,8 +16,8 @@ public enum ResponseType {
     GENERAL_SUCCESS("SimpleOutPrint","Command executed successfully."),
     NOT_ALLOWED("SimpleOutPrint","You are not allowed to do that.");
 
-    private String defaultMessage;
-    private String typeCode;
+    private final String defaultMessage;
+    private final String typeCode;
 
     ResponseType(String typeCode, String defaultMessage) {
         this.defaultMessage = defaultMessage;

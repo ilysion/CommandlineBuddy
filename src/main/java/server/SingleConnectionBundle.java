@@ -7,9 +7,9 @@ import java.net.Socket;
 
 /*This class is used for passing the Socket and DataStreams down the call chain (as seen in the server side flow chart)*/
 public class SingleConnectionBundle {
-    private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private final Socket socket;
+    private final DataInputStream dis;
+    private final DataOutputStream dos;
 
     public SingleConnectionBundle(Socket socket, DataInputStream dis, DataOutputStream dos) {
         this.socket = socket;
@@ -29,6 +29,9 @@ public class SingleConnectionBundle {
         return dos;
     }
 
+    //TODO: THERE SHOULD BE A SOME SORT OF MESSAGE TO THE USER WHEN THE USER GETS DISCONNECTED. ALSO THIS
+    //TODO: I THINK THIS METHOD SHOULD INCORPORATED INTO 'InMemoryDatabase' METHOD 'safeRemove' (not yet used. definitely must be used though.)
+    /*THIS IS NOT REDUNDANT! I PROPOSE THAT THE WHOLE SERVER PACKAGE BE MOVED INTO SEPERATE PROJECT EVENTUALLY.*/
     public void closeQuietly() {
         try {
             socket.close();

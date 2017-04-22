@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*This is a singleton.*/
-public class ChatHistory {
-    private List<String> historyOfPrintedChat;
+class ChatHistory {
+    private final List<String> historyOfPrintedChat;
     private static ChatHistory CHAT_HISTORY_INSTANCE = null;
 
     private ChatHistory() {

@@ -3,7 +3,7 @@ package client;
 import java.io.IOException;
 import java.util.List;
 
-public class MessageReceiver implements Runnable {
+class MessageReceiver implements Runnable {
     private final SingleConnectionBundle bundle;
 
     MessageReceiver(SingleConnectionBundle bundle) {

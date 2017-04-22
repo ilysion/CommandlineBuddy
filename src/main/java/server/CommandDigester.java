@@ -8,7 +8,7 @@ import server.conversion.ResponseType;
 import java.io.IOException;
 import java.util.*;
 
-public class CommandDigester {
+class CommandDigester {
     /*This list contains all of the analyzers at the disposal of the CommandDigester instance. We can always add more.*/
     private final List<CommandAnalyzer> availableAnalyzers = Collections.unmodifiableList(Arrays.asList(new HelpRequestAnalyzer(), new SendMessageAnalyzer(), new LeaveChatAnalyzer(), new ViewConnectedUsersAnalyzer(), new PermaBanAnalyzer(), new SilenceAnalyzer(), new RemoveBanAnalyzer(), new MakeModAnalyzer(), new RemoveModAnalyzer()));
 

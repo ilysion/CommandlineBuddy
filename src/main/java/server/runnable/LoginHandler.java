@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-/*This class is ugly and not elegant. It should be cleaned up. -danb*/
+//TODO: This class is ugly and not elegant. It should be cleaned up. -danb
 public class LoginHandler implements Runnable {
     private final SingleConnectionBundle connectionBundle;
 
@@ -48,13 +48,15 @@ public class LoginHandler implements Runnable {
         }
     }
 
-    private void connectUser(String correctUsername) throws SQLException, IOException {
+    //TODO: THERE SHOULD BE A MESSAGE WHEN THE USER IS SUCCESFULLY LOGGED IN.
+    private void connectUser(String correctUsername) throws IOException {
         UserDataForInMemory userData = new UserDataForInMemory(correctUsername, connectionBundle);
         InMemoryDatabase.safeAdd(userData);
         new Listener(userData).startListening();
     }
 
-    private String loginCycle() throws InterruptedException, IOException, SQLException {
+    //TODO: THIS METHOD SHOULD BE SPLIT INTO SEVERAL SMALLER METHODS IN ORDER TO INCREASE READABILITY.
+    private String loginCycle() throws IOException, SQLException {
         for (int i = 0; i < 5; i++) {
             if (connectionBundle.getSocket().isConnected()) {
             /*TYPE will be used in the client side application to digest different types of responses. -danb*/
@@ -86,7 +88,7 @@ public class LoginHandler implements Runnable {
         return null;
     }
 
-    private boolean isUserCreationSuccessful(String[] splittedUserInput) throws SQLException {
+    private boolean isUserCreationSuccessful(String[] splittedUserInput) {
         final String proposedUsername = splittedUserInput[1];
         final String proposedPassword = splittedUserInput[2];
         if (Database.isUsernameFree(proposedUsername)) {

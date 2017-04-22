@@ -3,7 +3,7 @@ package client;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResponseDigester {
+class ResponseDigester {
 
     void printResponse(String serverResponse) {
         if (serverResponse.startsWith("[TYPE=[SimplePrintOut]] [MESSAGE=[")) {
