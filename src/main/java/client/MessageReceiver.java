@@ -1,28 +1,30 @@
 package client;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.util.List;
 
+public class MessageReceiver implements Runnable {
+    private final SingleConnectionBundle bundle;
 
-
-public class MessageReceiver implements Runnable{
-    private Socket sock;
-
-    MessageReceiver(Socket sock) {
-        this.sock = sock;
+    MessageReceiver(SingleConnectionBundle bundle) {
+        this.bundle = bundle;
     }
 
     @Override
-    public void run(){
-        try(DataInputStream instream = new DataInputStream(sock.getInputStream())) {
-            while (true) {
-            String msg = instream.readUTF();
-            System.out.println(msg);
+    public void run() {
+        try {
+            while (bundle.getSocket().isConnected()) {
+                String serverResponse = bundle.getDis().readUTF();
+                new ResponseDigester().printResponse(serverResponse);
             }
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            bundle.closeQuietly();
         }
     }
+
+
+
+
 }

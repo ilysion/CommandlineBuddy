@@ -13,7 +13,7 @@ Secondary to DO list:
 - Admins/Mods
 - currency for buying some features?
 - Chat groups
-- Notepad thingy for each user
+- Notepad thingy for each userDataForInMemory
 - Offline/private messages
 - File sharing
 
