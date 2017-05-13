@@ -1,5 +1,5 @@
 # CommandlineBuddy
-NIO-based server is in the nio branch and an improved version of the threaded server in the threadedserver branch.
+Basic commandline based chat room
 
 Primary to DO list:
 - logging

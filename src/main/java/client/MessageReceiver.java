@@ -3,26 +3,38 @@ package client;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
-
+/**
+ * Created by CmdBuddyTeam on 29.03.2017.
+ */
 
 public class MessageReceiver implements Runnable{
-    private Socket sock;
+    private Socket socket;
 
-    MessageReceiver(Socket sock) {
-        this.sock = sock;
+    public MessageReceiver(Socket socket) {
+        this.socket = socket;
     }
 
     @Override
     public void run(){
-        try(DataInputStream instream = new DataInputStream(sock.getInputStream())) {
-            while (true) {
-            String msg = instream.readUTF();
-            System.out.println(msg);
+        try(DataInputStream instream = new DataInputStream(socket.getInputStream())) {
+            while(!Thread.currentThread().isInterrupted()) {
+                try {
+                    byte[] message = new byte[1000];
+                    instream.read(message);
+                    System.out.println(new String(message));
+                } catch (SocketException e1) {
+                    System.out.println("Socket was closed!");
+                    break;
+                } catch (IOException e) {
+                    System.out.println("error: " + e);
+                    break;
+                }
             }
         }
         catch(IOException e){
-            throw new RuntimeException(e);
+            System.out.println("error: " + e);
         }
     }
 }
