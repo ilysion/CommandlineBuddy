@@ -12,25 +12,35 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Server implements Runnable {
-    private final static int PORT = 1337;
+    private final int PORT = ServerProperties.getPortValue();
 
     private final ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
     private final Selector selector = Selector.open();
     private final Map<SocketChannel, byte[]> messages = new HashMap<>();
     private final Set<SocketChannel> channels = new HashSet<>();
+    private final List<ConnectionBundle> bundles = new ArrayList<>();
+
+    public void sendMessageToUser(String message, String username) {
+        //TODO: A method like this must be created in order to merge with threadedversion.
+        // How to implement this?
+        // I suggest that this be implemented via a Map of SocketChannels and Strings (usernames).
+        // This way the correct SocketChannel can be accessed with the username.
+        // It must be noted that connected clients that have not yet logged in should not be in this list,
+        // as they don't have an username.
+    }
 
     private Server() throws IOException {
         try {
-
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
-
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
         } catch (BindException e) {
             System.out.println("Error: Address is already in use!");
             System.exit(1);
-        } catch (Exception e2) {
+        }
+        //TODO: The following catch block is unnecessary?
+        catch (Exception e2) {
             throw new RuntimeException(e2);
         }
     }
@@ -46,7 +56,9 @@ public class Server implements Runnable {
             serverSocketChannel.socket().close();
             serverSocketChannel.close();
 
-        } catch (Exception e) {
+        }
+        //TODO: The following rethrow should be replaced with a throw in method signature.
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,6 +68,7 @@ public class Server implements Runnable {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 this.selector.select();
+                //TODO: Raw use of parametrized class below. Why not "Set<SelectionKey>" and "Iterator<SelectionKey>"?
                 Set keys = this.selector.selectedKeys();
                 Iterator iterator = keys.iterator();
                 while (iterator.hasNext()) {
@@ -70,7 +83,9 @@ public class Server implements Runnable {
                     iterator.remove();
                 }
             }
-        } catch (Exception e) {
+        }
+        //TODO: The Exception below can be specified to IOException.
+        catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             stop();
@@ -81,6 +96,7 @@ public class Server implements Runnable {
         System.out.println("Accepting connection!");
 
         SocketChannel socketChannel = serverSocketChannel.accept();
+
         socketChannel.configureBlocking(false);
 
         channels.add(socketChannel);
@@ -101,8 +117,9 @@ public class Server implements Runnable {
 
             byte[] temp = new byte[1000];
             buf.get(temp, 0, read);
+            String input = new String(temp);
 
-            if (new String(temp).charAt(0) == '/') {
+            if (input.charAt(0) == '/') {
                 //TODO commands
             } else {
                 Date date = new Date();
@@ -115,21 +132,23 @@ public class Server implements Runnable {
                     channel.register(this.selector, SelectionKey.OP_WRITE);
                 }
             }
-
-        } catch (Exception e) {
+        }
+        //TODO: Can the Exception below be made more specific?
+        catch (Exception e) {
             System.out.println("Client socket closed");
             socketChannel.close();
             channels.remove(socketChannel);
         }
 
+
     }
 
     private void write(SelectionKey key) throws IOException {
+        //TODO: Doesn't this just send the message only to the channel registered with the key of this method's argument?
         System.out.println("Sending message to users!");
         SocketChannel socketChannel = (SocketChannel) key.channel();
         byte[] message = this.messages.get(socketChannel);
         socketChannel.write(ByteBuffer.wrap(message));
         socketChannel.register(this.selector, SelectionKey.OP_READ);
     }
-
 }
