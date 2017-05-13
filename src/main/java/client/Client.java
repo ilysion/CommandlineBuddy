@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -50,7 +49,7 @@ public class Client {
                             }
 
                         } catch (ConnectException e) {
-                            System.out.println("Unable to connect to the server. Are you sure the server is up?");
+                            System.err.println("Unable to connect to the server. Are you sure the server is up?");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
