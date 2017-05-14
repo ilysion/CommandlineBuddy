@@ -1,6 +1,7 @@
 package server;
 
 import org.springframework.util.Assert;
+import server.analyzers.CommandAnalyzer;
 import server.enums.ResponseType;
 
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class ServerProperties {
+    //TODO: In terms of performance, all the information in the properties file should only be read once during server startup.
+
     private final static String FILENAME = "config.properties";
     private final static ServerProperties INSTANCE = new ServerProperties();
 
@@ -27,15 +30,15 @@ public class ServerProperties {
         return INSTANCE;
     }
 
-    public static int getPort() {
+    static int getPort() {
         return Integer.parseInt(getInstance().properties.getProperty("port"));
     }
 
-    public static String getName() {
+    static String getName() {
         return getInstance().properties.getProperty("name");
     }
 
-    public static int getMaxLoginAttempts() {
+    static int getMaxLoginAttempts() {
         //TODO: To be implemented.
         return 0;
     }
@@ -55,16 +58,44 @@ public class ServerProperties {
         HELP_MOD("The following commands are available to you:\nhelp\nsend <message>\nleave\nview\npermaban <username>\nremoveban <username>"),
         HELP_ADMIN("The following commands are available to you:\nhelp\nsend <message>\nleave\nview\npermaban <username>\nremoveban <username>\nmakemod <username>\nremovemod <username>"),
         GENERAL_SUCCESS("Command executed successfully."),
-        NOT_ALLOWED("You are not allowed to do that.");
+        NOT_ALLOWED("You are not allowed to do that."),
+        DISCONNECTED("You have been disconnected from the server."),
+        USER_DOES_NOT_EXIST("This user does not exist."),
+        INCOMING_ACTIVE_USERS("Active users: "),
+        DISCONNECT_REQUEST("Disconnecting user..");
         */
         return null;
     }
 
-    public static String getMessageOfResponse(ResponseType type) {
+    public static String getMessage(ResponseType type) {
         Map<ResponseType, String> responseMessages = getResponseMessages();
         Assert.notNull(responseMessages, "getResponseMessages() should not return null.");
-        String message = getResponseMessages().get(type);
-        Assert.notNull(message, "Map returned by getResponseMessages() did not the requested ResponseType.");
+        String message = responseMessages.get(type);
+        Assert.notNull(message, "Map returned by getResponseMessages() did not contain the requested ResponseType.");
         return message;
     }
+
+    private static <T extends CommandAnalyzer> Map<Class<T>, String> getAnalyzerKeywords() {
+        //TODO: Must return the keyword of all the CommandAnalyzers. The keyword is always inputString.split[0].
+        // The current keywords are as follows. They should probably be changed:
+        /*
+        DisconnectAnalyzer: "disconnect"
+        HelpRequestAnalyzer: "help"
+        MakeModAnalyzer: "makemod"
+        PermaBanAnalyzer: "permaban"
+        RestoreUserStanding: "restore"
+        SilenceAnalyzer: "silence"
+        ViewConnectedUsersAnalyzer: "view"
+        */
+        return null;
+    }
+
+    public static <T extends CommandAnalyzer> String getKeyword(Class<T> analyzerClass) {
+        Map<Class<T>, String> keywords = getAnalyzerKeywords();
+        Assert.notNull(keywords, "getAnalyzerKeywords() should not return null.");
+        String keyword = keywords.get(analyzerClass);
+        Assert.notNull(keyword, "Map returned by getResponseMessages() did not contain the requested Analyzer.");
+        return keyword;
+    }
+
 }

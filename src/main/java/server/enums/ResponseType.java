@@ -15,12 +15,17 @@ public enum ResponseType {
     HELP_MOD(),
     HELP_ADMIN(),
     GENERAL_SUCCESS(),
-    NOT_ALLOWED();
+    NOT_ALLOWED(),
+    DISCONNECTED(),
+    USER_DOES_NOT_EXIST,
+    INCOMING_ACTIVE_USERS,
+    DISCONNECT_REQUEST;
+
 
     private final String defaultMessage;
 
     ResponseType() {
-        this.defaultMessage = ServerProperties.getMessageOfResponse(this);
+        this.defaultMessage = ServerProperties.getMessage(this);
     }
 
     public String getMessage() {

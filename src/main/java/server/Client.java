@@ -11,15 +11,15 @@ public class Client {
     private LoginStage stage = LoginStage.LOGGING_IN;
     private int failedLoginAttempts = 0;
 
-    public void incrementAttempts() {
+    void incrementAttempts() {
         failedLoginAttempts++;
     }
 
-    public int getAttempts() {
+    int getAttempts() {
         return failedLoginAttempts;
     }
 
-    public void setUsername(String username) {
+    void setUsername(String username) {
         this.username = username;
     }
 
@@ -32,7 +32,7 @@ public class Client {
         return username;
     }
 
-    public SocketChannel getSocketChannel() {
+    SocketChannel getSocketChannel() {
         return socketChannel;
     }
 
@@ -40,13 +40,11 @@ public class Client {
         return stage;
     }
 
-    public void setStage(LoginStage stage) {
-        if (stage != null) {
-            this.stage = stage;
-        }
+    void setStageToLoggedIn() {
+            this.stage = LoginStage.LOGGED_IN;
     }
 
-    public boolean isNotLoggedIn() {
+    boolean isNotLoggedIn() {
         return stage.equals(LoginStage.LOGGING_IN);
     }
 }

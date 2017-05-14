@@ -1,6 +1,5 @@
 package server.enums;
 
 public enum LoginStage {
-    LOGGING_IN, LOGGED_IN;
-
+    LOGGING_IN, LOGGED_IN
 }

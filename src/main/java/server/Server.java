@@ -1,5 +1,6 @@
 package server;
 
+import org.springframework.util.Assert;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
@@ -11,7 +12,7 @@ import java.nio.channels.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Server {
+class Server {
     private final static int PORT = ServerProperties.getPort();
     private final static String SERVERNAME = ServerProperties.getName();
 
@@ -125,9 +126,17 @@ public class Server {
             }
         }
         else if (handler.isCommand()) {
-            //TODO: To be implemented.
+            ResponseType response = handler.handleCommandAndGenerateResponse();
+            queueMessageToClient(client, response.getMessage());
+            if (response.equals(ResponseType.DISCONNECTED_FAIL_ATTEMPTS) || response.equals(ResponseType.DISCONNECT_REQUEST)) {
+                disconnectClient(client);
+            }
+            else if (response.equals(ResponseType.INCOMING_ACTIVE_USERS)) {
+                String listedOnlineUsers = getFormattedOnlineUsers();
+                queueMessageToClient(client, listedOnlineUsers);
+            }
         }
-        else if (!Database.getUserStanding(client.getUsername()).equals(UserStanding.SILENCED)){
+        else if (!UserStanding.SILENCED.equals(Database.getUserStanding(client.getUsername()))){
             Date date = new Date();
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
             String msg = formattedDate.format(date) + input.replaceAll("\\s+", "");
@@ -159,6 +168,27 @@ public class Server {
             }
         }
         throw new RuntimeException("Client with this SocketChannel was not in 'Set<Client> clients' at the time of reading from SocketChannel.");
+    }
+
+    private String getFormattedOnlineUsers() {
+        Set<Client> onlineClients = getOnlineClients();
+        StringBuilder listedUsers = new StringBuilder();
+        for (Client client : onlineClients) {
+            listedUsers.append(client.getUsername()).append("\n");
+        }
+        return listedUsers.toString();
+    }
+
+
+    private Set<Client> getOnlineClients() {
+        HashSet<Client> onlineClients = new HashSet<>();
+        for (Client client : clients) {
+            if (!client.isNotLoggedIn()) {
+                onlineClients.add(client);
+            }
+        }
+        Assert.notEmpty(onlineClients, "There should always be at least one user online (the user executing the command).");
+        return onlineClients;
     }
 
     private void disconnectClient(Client client) {
