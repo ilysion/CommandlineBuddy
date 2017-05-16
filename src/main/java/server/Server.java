@@ -3,7 +3,6 @@ package server;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
@@ -141,10 +140,10 @@ class Server {
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
             String msg = formattedDate.format(date)+ client.getUsername() + ": " + input.replaceAll("\\s+", "");
 
-            byte[] temp = msg.getBytes();
-
             for (Client client1 : clients) {
-                queueMessageToClient(client1,msg);
+                if (!client.isNotLoggedIn()) {
+                    queueMessageToClient(client1, msg);
+                }
             }
         }
     }
