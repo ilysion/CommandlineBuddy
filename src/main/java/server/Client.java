@@ -1,9 +1,9 @@
 package server;
 
-import org.springframework.util.Assert;
 import server.enums.LoginStage;
 
 import java.nio.channels.SocketChannel;
+import java.util.Objects;
 
 public class Client {
     private String username;
@@ -28,8 +28,7 @@ public class Client {
     }
 
     public String getUsername() {
-        Assert.notNull(username, "getUsername() called before username field was initialized.");
-        return username;
+        return Objects.requireNonNull(username, "getUsername() called before username field was initialized.");
     }
 
     SocketChannel getSocketChannel() {

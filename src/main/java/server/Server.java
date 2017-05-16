@@ -1,6 +1,5 @@
 package server;
 
-import org.springframework.util.Assert;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
@@ -18,10 +17,9 @@ class Server {
 
     private final ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
     private final Selector selector = Selector.open();
+
     private final Map<SocketChannel, byte[]> messages = new HashMap<>();
     private final Set<SocketChannel> channels = new HashSet<>();
-
-    //This should be periodically refreshed so that disconnected clients are removed.
     private final Set<Client> clients = new HashSet<>();
 
     private Server() throws IOException {}
@@ -55,7 +53,6 @@ class Server {
     }
 
     private void run() throws Exception {
-        //Is the main thread ever interrupted other than when the program is closed? -dan
         while (!Thread.currentThread().isInterrupted()) {
             this.selector.select();
             Set<SelectionKey> keys = this.selector.selectedKeys();
@@ -140,7 +137,7 @@ class Server {
             Date date = new Date();
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
             String msg = formattedDate.format(date) + input.replaceAll("\\s+", "");
-            ;
+
             byte[] temp = msg.getBytes();
             for (SocketChannel channel : channels) {
                 this.messages.put(channel, temp);
@@ -187,7 +184,9 @@ class Server {
                 onlineClients.add(client);
             }
         }
-        Assert.notEmpty(onlineClients, "There should always be at least one user online (the user executing the command).");
+        if (onlineClients.isEmpty()) {
+            throw new RuntimeException("\"There should always be at least one user online (the user executing the command).\"");
+        }
         return onlineClients;
     }
 

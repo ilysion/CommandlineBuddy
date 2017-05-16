@@ -1,13 +1,13 @@
 package server;
 
-import org.springframework.util.Assert;
 import server.analyzers.CommandAnalyzer;
 import server.enums.ResponseType;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Objects;
+import java.util.Properties;
 
 public class ServerProperties {
     private final static String FILENAME = "config.properties";
@@ -40,14 +40,10 @@ public class ServerProperties {
     }
 
     public static String getMessage(ResponseType type) {
-        String message = getInstance().properties.getProperty(type.name());
-        Assert.notNull(message, type.name() + " doesn't have a matching response message!");
-        return message;
+        return Objects.requireNonNull(getInstance().properties.getProperty(type.name()), "No response message found for " + type.name());
     }
 
     public static <T extends CommandAnalyzer> String getKeyword(Class<T> analyzerClass) {
-        String keyword = getInstance().properties.getProperty(analyzerClass.getSimpleName());
-        Assert.notNull(keyword, analyzerClass.getName() + " doesn't have a matching keyword!");
-        return keyword;
+        return Objects.requireNonNull(getInstance().properties.getProperty(analyzerClass.getSimpleName()), "No keyword found for " + analyzerClass.getSimpleName());
     }
 }
