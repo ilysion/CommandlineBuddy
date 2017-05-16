@@ -11,7 +11,7 @@ public class Database {
     private static Database INSTANCE = null;
     private final static String DBFILE = "server.db";
 
-    public Database() throws SQLException {
+    private Database() throws SQLException {
         File file = new File(DBFILE);
         boolean createTable = !file.exists();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {

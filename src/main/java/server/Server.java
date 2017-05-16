@@ -26,7 +26,6 @@ class Server {
     private Server() throws IOException {}
 
     public static void main(String[] args) throws Exception {
-        Database database = new Database();
         Server server = new Server();
         server.init();
         try {
