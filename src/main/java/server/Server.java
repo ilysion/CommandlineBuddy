@@ -139,9 +139,9 @@ class Server {
             String msg = formattedDate.format(date) + input.replaceAll("\\s+", "");
 
             byte[] temp = msg.getBytes();
-            for (SocketChannel channel : channels) {
-                this.messages.put(channel, temp);
-                channel.register(this.selector, SelectionKey.OP_WRITE);
+
+            for (Client client1 : clients) {
+                queueMessageToClient(client1,msg);
             }
         }
     }
@@ -151,15 +151,19 @@ class Server {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         Client client = findClientViaChannel(socketChannel);
         String msg = client.getQueuedMessage();
-        if (!msg.equals("null")){
+        if (msg != null) {
             socketChannel.write(ByteBuffer.wrap(msg.getBytes()));
+            if (!client.isQueueEmpty()) {
+                socketChannel.register(this.selector, SelectionKey.OP_WRITE);
+            }
+        } else {
             socketChannel.register(this.selector, SelectionKey.OP_READ);
         }
     }
 
-    private void queueMessageToClient(Client client, String message) {
+    private void queueMessageToClient(Client client, String message) throws ClosedChannelException {
         client.addToQueue(message);
-        //TODO: To be implemented.
+        client.getSocketChannel().register(this.selector, SelectionKey.OP_WRITE);
     }
 
     private Client findClientViaChannel(SocketChannel channel) {
