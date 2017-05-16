@@ -30,7 +30,7 @@ class Server {
         try {
             server.run();
         } finally {
-            server.stop();
+             server.stop();
         }
     }
 
@@ -98,10 +98,10 @@ class Server {
 
             buf.flip();
 
-            byte[] temp = new byte[1000];
-            buf.get(temp, 0, read);
+            byte[] temp = new byte[read];
+            buf.get(temp);
             Client client = findClientViaChannel(socketChannel);
-            String input = new String(temp, "UTF-8");
+            String input = new String(temp, 1 , read - 1, "UTF-8");
             digestInput(client, input);
 
         } catch (ClosedChannelException e) {
