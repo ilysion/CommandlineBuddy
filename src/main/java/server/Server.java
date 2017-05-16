@@ -155,6 +155,8 @@ class Server {
             socketChannel.write(ByteBuffer.wrap(msg.getBytes()));
             if (!client.isQueueEmpty()) {
                 socketChannel.register(this.selector, SelectionKey.OP_WRITE);
+            } else {
+                socketChannel.register(this.selector, SelectionKey.OP_READ);
             }
         } else {
             socketChannel.register(this.selector, SelectionKey.OP_READ);
