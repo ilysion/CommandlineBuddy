@@ -4,9 +4,7 @@ import org.springframework.util.Assert;
 import server.enums.UserStanding;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
     private static Database INSTANCE = null;
@@ -17,7 +15,7 @@ public class Database {
         boolean createTable = !file.exists();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             if (createTable) {
-                connection.createStatement().executeUpdate("create table user (id integer PRIMARY KEY AUTOINCREMENT, name string, password string)");
+                connection.createStatement().executeUpdate("create table user (id integer PRIMARY KEY AUTOINCREMENT, name string, password string, standing string)");
             }
         }
     }
@@ -44,38 +42,96 @@ public class Database {
         }
     }*/
 
-    static boolean isUsernameFree(String username) {
+    static boolean isUsernameFree(String username){
         Assert.notNull(username, "Method called with null arguments");
         //TODO: implement database query. must return true if provided username is not currently in database. must return false if provided username is already in use.
-        /*placeholder return value*/
-        return false;
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
+            stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
+            return !results.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     static void createNewAccount(String username, String password) {
         Assert.notNull(username, "Method called with null arguments");
         Assert.notNull(password, "Method called with null arguments");
         //TODO: implement database modification. must create new user in database with following information: username, password, time joined (in unix), .
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO user (name, password, standing) VALUES (name = ?, password = ?, standing = 'NORMAL') ");
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet results = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    static boolean checkLogin(String username, String password) {
+    static boolean checkLogin(String username, String password){
         Assert.notNull(username, "Method called with null arguments");
         Assert.notNull(password, "Method called with null arguments");
         //TODO: implement database query. must return true if username/password combination is correct. must return false if it is not correct.
-        /*placeholder return value*/
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT password FROM user WHERE user = ?");
+            stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                String pw = results.getString("password").replaceAll("\\s+", "");
+                if(pw.equals(password)){
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     public static UserStanding getUserStanding(String username) {
         Assert.notNull(username, "Method called with null arguments");
         //TODO: must query user standing from database. different standing values are specified in 'userstanding' class.
-        /*PLACEHOLDER RETURN VALUE*/
-        return null;
+        UserStanding userStanding = null;
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT standing FROM user WHERE user = ?");
+            stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                String standing = results.getString("standing").replaceAll("\\s+", "");
+
+                switch (standing){
+                    case "NORMAL": userStanding = UserStanding.NORMAL;
+                        break;
+                    case "MOD": userStanding = UserStanding.MOD;
+                        break;
+                    case "ADMIN": userStanding = UserStanding.ADMIN;
+                        break;
+                    case "BANNED": userStanding = UserStanding.BANNED;
+                        break;
+                    case "SILENCED": userStanding = UserStanding.SILENCED;
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userStanding;
     }
 
     public static void setUserStanding(String username, UserStanding userStanding) {
         Assert.notNull(userStanding, "Method called with null arguments");
         Assert.notNull(username, "Method called with null arguments");
         //TODO: must modify user standing in database so that it is the same as specified. different standing values are specified in 'userstanding' class.
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE user SET standing = ?");
+            stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -104,4 +160,6 @@ public class Database {
         //TODO: To be implemented. Must return true if user with this username exists in database.
         return false;
     }
+
+
 }
