@@ -72,18 +72,29 @@ public class Client {
     }
 
     private static boolean ipValidator(String message){
-        boolean valid = true;
         String ip = message.split(" ")[1];
         int port = Integer.parseInt(ip.split(":")[1]);
+        if (port < 0 || port > 65535){
+            return false;
+        }
+        if (ip.split(":")[0].equals("localhost")){
+            return true;
+        }
+
         for (int i = 0; i < 4; i++) {
-            int ipPart = Integer.parseInt(ip.split(":")[0].split("\\.")[i]);
+            String ipString = ip.split(":")[0].split("\\.")[i];
+            if(ipString.length() == 2 && ipString.startsWith("0")){
+                return false;
+            }
+            if(ipString.length() == 3 && ipString.startsWith("0") || ipString.length() == 3 && ipString.startsWith("00")){
+                return false;
+            }
+
+            int ipPart = Integer.parseInt(ipString);
             if (ipPart < 0 || ipPart > 256){
-                valid = false;
+                return false;
             }
         }
-        if (port < 0 || port > 65535){
-            valid = false;
-        }
-        return valid;
+        return true;
     }
 }
