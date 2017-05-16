@@ -1,5 +1,7 @@
 package client;
 
+import com.sun.xml.internal.fastinfoset.util.CharArray;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -73,7 +75,19 @@ public class Client {
 
     private static boolean ipValidator(String message){
         String ip = message.split(" ")[1];
-        int port = Integer.parseInt(ip.split(":")[1]);
+        String portString = ip.split(":")[1];
+        char[] portNumbers = portString.toCharArray();
+
+        for (int i = 0; i < portNumbers.length; i++) {
+            if (portNumbers[i] == '0'){
+                return false;
+            }
+            else{
+                break;
+            }
+        }
+
+        int port = Integer.parseInt(portString);
         if (port < 0 || port > 65535){
             return false;
         }

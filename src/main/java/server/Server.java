@@ -149,12 +149,16 @@ class Server {
     private void write(SelectionKey key) throws IOException {
         System.out.println("Sending message to users!");
         SocketChannel socketChannel = (SocketChannel) key.channel();
-        byte[] message = this.messages.get(socketChannel);
-        socketChannel.write(ByteBuffer.wrap(message));
-        socketChannel.register(this.selector, SelectionKey.OP_READ);
+        Client client = findClientViaChannel(socketChannel);
+        String msg = client.getQueuedMessage();
+        if (!msg.equals("null")){
+            socketChannel.write(ByteBuffer.wrap(msg.getBytes()));
+            socketChannel.register(this.selector, SelectionKey.OP_READ);
+        }
     }
 
     private void queueMessageToClient(Client client, String message) {
+        client.addToQueue(message);
         //TODO: To be implemented.
     }
 
@@ -191,7 +195,17 @@ class Server {
     }
 
     private void disconnectClient(Client client) {
-        //TODO: To be implemented. The client should be disconnected AFTER he has received the message queued to him.
+
+        if(client.isQueueEmpty()){
+            try {
+                client.getSocketChannel().close();
+            } catch (IOException e) {
+                System.err.println("Error: Client socket already closed!");
+                e.printStackTrace();
+            }
+            channels.remove(client.getSocketChannel());
+        }
+
     }
 
 }
