@@ -11,7 +11,7 @@ public class Database {
     private static Database INSTANCE = null;
     private final static String DBFILE = "server.db";
 
-    private Database() throws SQLException {
+    public Database() throws SQLException {
         File file = new File(DBFILE);
         boolean createTable = !file.exists();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
@@ -32,10 +32,10 @@ public class Database {
         Objects.requireNonNull(username, "Method called with null arguments");
         Objects.requireNonNull(password, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO user (name, password, standing) VALUES (name = ?, password = ?, standing = 'NORMAL') ");
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO user (name, password, standing) VALUES (?, ?, 'NORMAL') ");
             stmt.setString(1, username);
             stmt.setString(2, BCrypt.hashpw(password, BCrypt.gensalt()));
-            ResultSet results = stmt.executeQuery();
+            stmt.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

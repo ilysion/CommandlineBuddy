@@ -3,6 +3,7 @@ package server;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
@@ -25,6 +26,7 @@ class Server {
     private Server() throws IOException {}
 
     public static void main(String[] args) throws Exception {
+        Database database = new Database();
         Server server = new Server();
         server.init();
         try {
@@ -101,8 +103,10 @@ class Server {
             byte[] temp = new byte[read];
             buf.get(temp);
             Client client = findClientViaChannel(socketChannel);
-            String input = new String(temp, 1 , read - 1, "UTF-8");
+            String input = new String(temp, 2 , read - 2, "UTF-8");
+            System.out.println("*" + input + "*");
             digestInput(client, input);
+
 
         } catch (ClosedChannelException e) {
             System.err.println("Error: Client socket closed!");
@@ -136,7 +140,7 @@ class Server {
         else if (!UserStanding.SILENCED.equals(Database.getUserStanding(client.getUsername()))){
             Date date = new Date();
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
-            String msg = formattedDate.format(date) + input.replaceAll("\\s+", "");
+            String msg = formattedDate.format(date)+ client.getUsername() + ": " + input.replaceAll("\\s+", "");
 
             byte[] temp = msg.getBytes();
 
