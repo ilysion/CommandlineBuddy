@@ -1,14 +1,13 @@
 package server;
 
-import org.springframework.util.Assert;
 import server.analyzers.*;
 import server.enums.LoginInputType;
-import server.enums.LoginStage;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 class InputHandler {
 
@@ -41,8 +40,8 @@ class InputHandler {
             return ResponseType.INVALID_LOGIN_FORMAT;
         }
         else if (type.equals(LoginInputType.LOGIN_ATTEMPT)) {
-            Assert.notNull(username, "Username not initialized before LOGIN_ATTEMPT.");
-            Assert.notNull(password, "Password not initialized before LOGIN_ATTEMPT.");
+            Objects.requireNonNull(username, "Username not initialized before LOGIN_ATTEMPT.");
+            Objects.requireNonNull(password, "Password not initialized before LOGIN_ATTEMPT.");
             boolean isCorrect = Database.checkLogin(username, password);
             if (isCorrect) {
                 if (UserStanding.BANNED.equals(Database.getUserStanding(username))) {
@@ -65,10 +64,10 @@ class InputHandler {
             }
         }
         else if (type.equals(LoginInputType.REGISTRATION_ATTEMPT)){
-            Assert.notNull(username, "Username not initialized before REGISTRATION_ATTEMPT.");
-            Assert.notNull(password, "Password not initialized before REGISTRATION_ATTEMPT.");
-            boolean isCorrect = Database.isUsernameFree(username);
-            if (isCorrect) {
+            Objects.requireNonNull(username, "Username not initialized before REGISTRATION_ATTEMPT.");
+            Objects.requireNonNull(password, "Password not initialized before REGISTRATION_ATTEMPT.");
+            boolean userExists = Database.doesUserExist(username);
+            if (!userExists) {
                 Database.createNewAccount(username, password);
                 return ResponseType.ACCOUNT_CREATED;
             }
@@ -104,7 +103,7 @@ class InputHandler {
     }
 
     ResponseType handleCommandAndGenerateResponse() {
-        Assert.notNull(selectedAnalyzer,"selectedAnalyzer not initialized before handling command.");
+        Objects.requireNonNull(selectedAnalyzer, "selectedAnalyzer not initialized before handling command.");
         return selectedAnalyzer.analyze(client, input.split(" "));
     }
 }
