@@ -17,18 +17,13 @@ public enum ResponseType {
     GENERAL_SUCCESS(),
     NOT_ALLOWED(),
     DISCONNECTED(),
-    USER_DOES_NOT_EXIST,
-    INCOMING_ACTIVE_USERS,
-    DISCONNECT_REQUEST;
+    USER_DOES_NOT_EXIST(),
+    INCOMING_ACTIVE_USERS(),
+    DISCONNECT_REQUEST();
 
-
-    private final String defaultMessage;
-
-    ResponseType() {
-        this.defaultMessage = ServerProperties.getMessage(this);
-    }
+    ResponseType() {}
 
     public String getMessage() {
-        return defaultMessage;
+        return ServerProperties.getMessage(this);
     }
 }
