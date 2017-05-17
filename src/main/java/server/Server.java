@@ -102,7 +102,7 @@ class Server {
             buf.get(temp);
             
             Client client = findClientViaChannel(socketChannel);
-            String input = new String(temp, 1 , read - 1, "UTF-8");
+            String input = new String(temp, 2 , read - 2, "UTF-8");
             digestInput(client, input);
 
         } catch (ClosedChannelException e) {
