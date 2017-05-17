@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
-/**
- * Created by CmdBuddyTeam on 29.03.2017.
- */
-
-public class MessageReceiver implements Runnable{
+public class MessageReceiver implements Runnable {
     private Socket socket;
 
     public MessageReceiver(Socket socket) {
@@ -17,24 +13,16 @@ public class MessageReceiver implements Runnable{
     }
 
     @Override
-    public void run(){
-        try(DataInputStream instream = new DataInputStream(socket.getInputStream())) {
-            while(!Thread.currentThread().isInterrupted()) {
-                try {
-                    byte[] message = new byte[1000];
-                    instream.read(message);
-                    System.out.println(new String(message, "UTF-8"));
-
-                } catch (SocketException e1) {
-                    System.out.println("Socket was closed!");
-                    break;
-                } catch (IOException e) {
-                    System.out.println("error: " + e);
-                    break;
-                }
+    public void run() {
+        try (DataInputStream instream = new DataInputStream(socket.getInputStream())) {
+            while (!Thread.currentThread().isInterrupted()) {
+                byte[] message = new byte[1000];
+                instream.read(message);
+                System.out.println(new String(message, "UTF-8"));
             }
-        }
-        catch(IOException e){
+        } catch (SocketException e1) {
+            System.out.println("Socket was closed!");
+        } catch (IOException e) {
             System.out.println("error: " + e);
         }
     }

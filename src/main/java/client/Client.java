@@ -54,8 +54,6 @@ public class Client {
 
                             } catch (ConnectException e) {
                                 System.err.println("Unable to connect to the server. Are you sure the server is up?");
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         }
                         else{
