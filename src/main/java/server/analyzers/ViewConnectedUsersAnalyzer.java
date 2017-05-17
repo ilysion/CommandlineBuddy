@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.UserStanding;
 import server.enums.ResponseType;
 
+import java.sql.SQLException;
+
 public class ViewConnectedUsersAnalyzer implements CommandAnalyzer{
     private final String keyword = ServerProperties.getKeyword(this.getClass());
 
@@ -15,7 +17,7 @@ public class ViewConnectedUsersAnalyzer implements CommandAnalyzer{
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         if (Database.isUserStandingAtleast(client.getUsername(), UserStanding.NORMAL)) {
             return ResponseType.INCOMING_ACTIVE_USERS;
         }

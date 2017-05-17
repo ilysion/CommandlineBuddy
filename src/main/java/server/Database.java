@@ -28,7 +28,7 @@ public class Database {
         return INSTANCE;
     }
 
-    static void createNewAccount(String username, String password) {
+    static void createNewAccount(String username, String password) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         Objects.requireNonNull(password, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
@@ -36,12 +36,10 @@ public class Database {
             stmt.setString(1, username);
             stmt.setString(2, BCrypt.hashpw(password, BCrypt.gensalt()));
             stmt.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    static boolean checkLogin(String username, String password){
+    static boolean checkLogin(String username, String password) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         Objects.requireNonNull(password, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
@@ -52,13 +50,11 @@ public class Database {
                 String password_hashed = results.getString("password").replaceAll("\\s+", "");
                 return BCrypt.checkpw(password, password_hashed);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
         return false;
     }
 
-    public static UserStanding getUserStanding(String username) {
+    public static UserStanding getUserStanding(String username) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         UserStanding userStanding = null;
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
@@ -79,13 +75,11 @@ public class Database {
                     case "SILENCED": userStanding = UserStanding.SILENCED;
                 }
             }
-        } catch (SQLException e) {
-           throw new RuntimeException(e);
         }
         return userStanding;
     }
 
-    public static void setUserStanding(String username, UserStanding userStanding) {
+    public static void setUserStanding(String username, UserStanding userStanding) throws SQLException {
         Objects.requireNonNull(userStanding, "Method called with null arguments");
         Objects.requireNonNull(username, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
@@ -93,13 +87,11 @@ public class Database {
             stmt.setString(1, userStanding.name());
             stmt.setString(2, username);
             stmt.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
 
-    public static boolean isUserStandingAtleast(String username, UserStanding standing) {
+    public static boolean isUserStandingAtleast(String username, UserStanding standing) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         Objects.requireNonNull(standing, "Method called with null arguments");
         UserStanding realStanding = getUserStanding(username);
@@ -120,45 +112,34 @@ public class Database {
         }
     }
 
-    public static boolean doesUserExist(String username) {
-        try {
-            getDB();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+    public static boolean doesUserExist(String username) throws SQLException {
+        getDB();
         Objects.requireNonNull(username, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
             stmt.setString(1, username);
             ResultSet results = stmt.executeQuery();
             return results.next();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public static double getUserCurrency(String username) {
+    public static double getUserCurrency(String username) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
             stmt.setString(1, username);
             ResultSet results = stmt.executeQuery();
             return results.getDouble("currency");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public static void addUserCurrency(String username, Double currency) {
+    public static void addUserCurrency(String username, Double currency) throws SQLException {
         Objects.requireNonNull(username, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE user SET currency = currency + ? WHERE name = ?");
             stmt.setDouble(1, currency);
             stmt.setString(2, username);
             stmt.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 

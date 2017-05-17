@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.UserStanding;
 import server.enums.ResponseType;
 
+import java.sql.SQLException;
+
 public class HelpRequestAnalyzer implements CommandAnalyzer{
 
     private final String keyword = ServerProperties.getKeyword(this.getClass());
@@ -21,7 +23,7 @@ public class HelpRequestAnalyzer implements CommandAnalyzer{
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         UserStanding userStanding = Database.getUserStanding(client.getUsername());
         if (userStanding == UserStanding.NORMAL || userStanding == UserStanding.SILENCED) {
             return ResponseType.HELP_NORMAL;

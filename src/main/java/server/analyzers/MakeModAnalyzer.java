@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.UserStanding;
 import server.enums.ResponseType;
 
+import java.sql.SQLException;
+
 public class MakeModAnalyzer implements CommandAnalyzer {
     private final String keyword = ServerProperties.getKeyword(this.getClass());
 
@@ -15,7 +17,7 @@ public class MakeModAnalyzer implements CommandAnalyzer {
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         if (Database.getUserStanding(client.getUsername()) == UserStanding.ADMIN) {
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {

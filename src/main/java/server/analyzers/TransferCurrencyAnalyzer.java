@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
+import java.sql.SQLException;
+
 public class TransferCurrencyAnalyzer implements CommandAnalyzer{
 
     private final String keyword = ServerProperties.getKeyword(this.getClass());
@@ -16,7 +18,7 @@ public class TransferCurrencyAnalyzer implements CommandAnalyzer{
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
 
         if (Database.getUserStanding(client.getUsername()) == UserStanding.ADMIN) {
             Double targetAddCurrency;

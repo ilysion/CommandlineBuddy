@@ -8,6 +8,7 @@ import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -87,7 +88,7 @@ class Server {
 
     }
 
-    private void read(SelectionKey key) throws IOException {
+    private void read(SelectionKey key) throws IOException, SQLException {
         System.out.println("Receieving data from user!");
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
@@ -114,7 +115,7 @@ class Server {
 
     }
 
-    private void digestInput(Client client, String input) throws ClosedChannelException {
+    private void digestInput(Client client, String input) throws ClosedChannelException, SQLException {
         InputHandler handler = new InputHandler(client, input);
         if (client.isNotLoggedIn()) {
             ResponseType response = handler.handleLoginAndGenerateResponse();

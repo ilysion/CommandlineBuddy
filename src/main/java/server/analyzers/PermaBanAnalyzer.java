@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.UserStanding;
 import server.enums.ResponseType;
 
+import java.sql.SQLException;
+
 public class PermaBanAnalyzer implements CommandAnalyzer{
 
     private final String keyword = ServerProperties.getKeyword(this.getClass());
@@ -16,7 +18,7 @@ public class PermaBanAnalyzer implements CommandAnalyzer{
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         if (Database.isUserStandingAtleast(client.getUsername(), UserStanding.MOD)) {
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {

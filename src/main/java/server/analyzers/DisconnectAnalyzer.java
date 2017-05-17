@@ -6,6 +6,8 @@ import server.ServerProperties;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
+import java.sql.SQLException;
+
 public class DisconnectAnalyzer implements CommandAnalyzer {
     private final String keyword = ServerProperties.getKeyword(this.getClass());
 
@@ -20,7 +22,7 @@ public class DisconnectAnalyzer implements CommandAnalyzer {
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         if (Database.isUserStandingAtleast(client.getUsername(), UserStanding.MOD)) {
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {

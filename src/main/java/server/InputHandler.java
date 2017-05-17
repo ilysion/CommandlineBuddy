@@ -5,6 +5,7 @@ import server.enums.LoginInputType;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +46,7 @@ class InputHandler {
         return false;
     }
 
-    ResponseType handleLoginAndGenerateResponse() {
+    ResponseType handleLoginAndGenerateResponse() throws SQLException {
         LoginInputType type = digestInput();
         if (type.equals(LoginInputType.INVALID_FORMAT)) {
             return ResponseType.INVALID_LOGIN_FORMAT;
@@ -114,7 +115,7 @@ class InputHandler {
         }
     }
 
-    ResponseType handleCommandAndGenerateResponse() {
+    ResponseType handleCommandAndGenerateResponse() throws SQLException {
         Objects.requireNonNull(selectedAnalyzer, "selectedAnalyzer not initialized before handling command.");
         return selectedAnalyzer.analyze(client, input.split(" "));
     }

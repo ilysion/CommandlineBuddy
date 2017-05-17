@@ -5,6 +5,8 @@ import server.Database;
 import server.ServerProperties;
 import server.enums.ResponseType;
 
+import java.sql.SQLException;
+
 public class ShowCurrencyAnalyzer implements CommandAnalyzer{
 
     private final String keyword = ServerProperties.getKeyword(this.getClass());
@@ -15,7 +17,7 @@ public class ShowCurrencyAnalyzer implements CommandAnalyzer{
     }
 
     @Override
-    public ResponseType analyze(Client client, String[] splittedUserInput) {
+    public ResponseType analyze(Client client, String[] splittedUserInput) throws SQLException {
         String username = client.getUsername();
         if (Database.doesUserExist(username)) {
             Double currency = Database.getUserCurrency(username);
