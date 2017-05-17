@@ -21,6 +21,7 @@ public class RestoreUserStanding implements CommandAnalyzer{
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {
                 Database.setUserStanding(client.getUsername(), UserStanding.NORMAL);
+                client.setUserStanding(UserStanding.NORMAL);
                 return ResponseType.GENERAL_SUCCESS;
             }
             else {

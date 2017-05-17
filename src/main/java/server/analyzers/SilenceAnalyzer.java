@@ -20,6 +20,7 @@ public class SilenceAnalyzer implements CommandAnalyzer{
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {
                 Database.setUserStanding(client.getUsername(), UserStanding.SILENCED);
+                client.setUserStanding(UserStanding.SILENCED);
                 return ResponseType.GENERAL_SUCCESS;
             }
             else {

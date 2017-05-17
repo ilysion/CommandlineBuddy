@@ -50,6 +50,7 @@ class InputHandler {
                 else {
                     client.setStageToLoggedIn();
                     client.setUsername(username);
+                    client.setUserStanding(Database.getUserStanding(client.getUsername()));
                     return ResponseType.GENERAL_SUCCESS;
                 }
             }

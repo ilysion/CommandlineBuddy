@@ -20,6 +20,7 @@ public class MakeModAnalyzer implements CommandAnalyzer {
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {
                 Database.setUserStanding(targetUsername, UserStanding.MOD);
+                client.setUserStanding(UserStanding.MOD);
                 return ResponseType.GENERAL_SUCCESS;
             }
             else {

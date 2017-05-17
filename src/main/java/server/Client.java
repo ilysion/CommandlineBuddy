@@ -1,6 +1,7 @@
 package server;
 
 import server.enums.LoginStage;
+import server.enums.UserStanding;
 
 import java.nio.channels.SocketChannel;
 import java.util.ArrayDeque;
@@ -13,6 +14,15 @@ public class Client {
     private LoginStage stage = LoginStage.LOGGING_IN;
     private int failedLoginAttempts = 0;
     private Queue<String> queuedMessages = new ArrayDeque<String>();
+    private UserStanding userStanding = null;
+
+    public UserStanding getUserStanding() {
+        return userStanding;
+    }
+
+    public void setUserStanding(UserStanding userStanding) {
+        this.userStanding = userStanding;
+    }
 
     public void addToQueue(String message) {
         this.queuedMessages.add(message);

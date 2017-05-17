@@ -92,7 +92,7 @@ public class Database {
             PreparedStatement stmt = connection.prepareStatement("UPDATE user SET standing = ? WHERE name = ?");
             stmt.setString(1, userStanding.name());
             stmt.setString(2, username);
-            ResultSet results = stmt.executeQuery();
+            stmt.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

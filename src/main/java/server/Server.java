@@ -102,7 +102,6 @@ class Server {
             buf.get(temp);
             Client client = findClientViaChannel(socketChannel);
             String input = new String(temp, 2 , read - 2, "UTF-8");
-            System.out.println("*" + input + "*");
             digestInput(client, input);
 
 
@@ -135,10 +134,10 @@ class Server {
                 queueMessageToClient(client, listedOnlineUsers);
             }
         }
-        else if (!UserStanding.SILENCED.equals(Database.getUserStanding(client.getUsername()))){
+        else if (!UserStanding.SILENCED.equals(client.getUserStanding())){
             Date date = new Date();
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
-            String msg = formattedDate.format(date)+ client.getUsername() + ": " + input.replaceAll("\\s+", "");
+            String msg = formattedDate.format(date) + "[" + client.getUserStanding() + "]" + client.getUsername() + ": " + input.replaceAll("\\s+", "");
 
             for (Client client1 : clients) {
                 if (!client.isNotLoggedIn()) {
