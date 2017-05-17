@@ -134,9 +134,11 @@ class Server {
                 queueMessageToClient(client, listedOnlineUsers);
             }
         }
-        else if (!UserStanding.SILENCED.equals(client.getUserStanding())){
+        else if (!UserStanding.SILENCED.equals(Database.getUserStanding(client.getUsername()))){
             Date date = new Date();
             SimpleDateFormat formattedDate = new SimpleDateFormat("[kk:mm] ");
+            //not the optimal way
+            client.setUserStanding(Database.getUserStanding(client.getUsername()));
             String msg = formattedDate.format(date) + "[" + client.getUserStanding() + "]" + client.getUsername() + ": " + input.replaceAll("\\s+", "");
 
             for (Client client1 : clients) {
