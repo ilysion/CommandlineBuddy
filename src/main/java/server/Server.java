@@ -178,7 +178,7 @@ class Server {
                 return client;
             }
         }
-        throw new RuntimeException("Client with this SocketChannel was not in 'Set<Client> clients' at the time of reading from SocketChannel.");
+        throw new IllegalStateException("Client with this SocketChannel was not in 'Set<Client> clients' at the time of reading from SocketChannel.");
     }
 
     private String getFormattedOnlineUsers() {
@@ -199,7 +199,7 @@ class Server {
             }
         }
         if (onlineClients.isEmpty()) {
-            throw new RuntimeException("\"There should always be at least one user online (the user executing the command).\"");
+            throw new IllegalStateException("\"There should always be at least one user online (the user executing the command).\"");
         }
         return onlineClients;
     }
