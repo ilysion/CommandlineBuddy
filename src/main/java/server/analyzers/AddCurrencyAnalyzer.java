@@ -26,6 +26,9 @@ public class AddCurrencyAnalyzer implements CommandAnalyzer {
             catch (Exception e){
                 return ResponseType.INVALID_CURRENCY;
             }
+            if(targetAddCurrency<0){
+                return ResponseType.INVALID_CURRENCY;
+            }
             String targetUsername = splittedUserInput[1];
             if (Database.doesUserExist(targetUsername)) {
                 Database.addUserCurrency(targetUsername, targetAddCurrency);

@@ -24,6 +24,7 @@ class InputHandler {
             new MakeModAnalyzer(),
             new DisconnectAnalyzer(),
             new AddCurrencyAnalyzer(),
+            new TransferCurrencyAnalyzer(),
             new ShowCurrencyAnalyzer());
 
     private CommandAnalyzer selectedAnalyzer;
