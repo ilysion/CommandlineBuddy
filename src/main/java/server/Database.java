@@ -16,7 +16,7 @@ public class Database {
         boolean createTable = !file.exists();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             if (createTable) {
-                connection.createStatement().executeUpdate("create table user (id integer PRIMARY KEY AUTOINCREMENT, name string, password string, standing string)");
+                connection.createStatement().executeUpdate("create table user (id integer PRIMARY KEY AUTOINCREMENT, name string, password string, standing string, currency DECIMAL DEFAULT 0)");
             }
         }
     }
@@ -121,12 +121,42 @@ public class Database {
     }
 
     public static boolean doesUserExist(String username) {
+        try {
+            getDB();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         Objects.requireNonNull(username, "Method called with null arguments");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
             stmt.setString(1, username);
             ResultSet results = stmt.executeQuery();
             return results.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static double getUserCurrency(String username) {
+        Objects.requireNonNull(username, "Method called with null arguments");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
+            stmt.setString(1, username);
+            ResultSet results = stmt.executeQuery();
+            return results.getDouble("currency");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void addUserCurrency(String username, Double currency) {
+        Objects.requireNonNull(username, "Method called with null arguments");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DBFILE)) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE user SET currency = currency + ? WHERE name = ?");
+            stmt.setDouble(1, currency);
+            stmt.setString(2, username);
+            stmt.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

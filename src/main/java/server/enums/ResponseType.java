@@ -19,7 +19,8 @@ public enum ResponseType {
     DISCONNECTED(),
     USER_DOES_NOT_EXIST(),
     INCOMING_ACTIVE_USERS(),
-    DISCONNECT_REQUEST();
+    DISCONNECT_REQUEST(),
+    INVALID_CURRENCY();
 
     ResponseType() {}
 

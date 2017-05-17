@@ -15,7 +15,17 @@ class InputHandler {
     private final String input;
     private String username;
     private String password;
-    private final List<CommandAnalyzer> availableAnalyzers = Arrays.asList(new HelpRequestAnalyzer(), new ViewConnectedUsersAnalyzer(), new PermaBanAnalyzer(), new SilenceAnalyzer(), new RestoreUserStanding(), new MakeModAnalyzer(), new DisconnectAnalyzer());
+    private final List<CommandAnalyzer> availableAnalyzers = Arrays.asList(
+            new HelpRequestAnalyzer(),
+            new ViewConnectedUsersAnalyzer(),
+            new PermaBanAnalyzer(),
+            new SilenceAnalyzer(),
+            new RestoreUserStanding(),
+            new MakeModAnalyzer(),
+            new DisconnectAnalyzer(),
+            new AddCurrencyAnalyzer(),
+            new ShowCurrencyAnalyzer());
+
     private CommandAnalyzer selectedAnalyzer;
 
 

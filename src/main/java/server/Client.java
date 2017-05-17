@@ -11,10 +11,19 @@ import java.util.Queue;
 public class Client {
     private String username;
     private final SocketChannel socketChannel;
+    private double currency;
     private LoginStage stage = LoginStage.LOGGING_IN;
     private int failedLoginAttempts = 0;
-    private Queue<String> queuedMessages = new ArrayDeque<String>();
+    private Queue<String> queuedMessages = new ArrayDeque<>();
     private UserStanding userStanding = null;
+
+    public double getCurrency() {
+        return currency;
+    }
+
+    public void addCurrency(double currency) {
+        this.currency += currency;
+    }
 
     public UserStanding getUserStanding() {
         return userStanding;
