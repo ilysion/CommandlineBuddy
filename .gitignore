@@ -1,5 +1,2 @@
 .idea
 *.iml
-out/
-*.db
-*.log
