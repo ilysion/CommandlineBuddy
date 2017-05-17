@@ -25,7 +25,7 @@ public class TransferCurrencyAnalyzer implements CommandAnalyzer{
             try{
                 targetAddCurrency = Double.parseDouble(splittedUserInput[2]);
             }
-            catch (Exception e){
+            catch (NumberFormatException e){
                 return ResponseType.INVALID_CURRENCY;
             }
             String targetUsernameFrom = client.getUsername();
