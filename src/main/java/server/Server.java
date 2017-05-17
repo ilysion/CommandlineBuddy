@@ -100,8 +100,9 @@ class Server {
 
             byte[] temp = new byte[read];
             buf.get(temp);
+            
             Client client = findClientViaChannel(socketChannel);
-            String input = new String(temp, 2 , read - 2, "UTF-8");
+            String input = new String(temp, 1 , read - 1, "UTF-8");
             digestInput(client, input);
 
         } catch (ClosedChannelException e) {
@@ -154,9 +155,6 @@ class Server {
         Client client = findClientViaChannel(socketChannel);
         String msg = client.getQueuedMessage();
         if (msg != null) {
-            ByteBuffer buf = ByteBuffer.allocate(1000);
-            buf.putInt(msg.getBytes().length);
-            socketChannel.write(buf);
             socketChannel.write(ByteBuffer.wrap(msg.getBytes()));
             if (!client.isQueueEmpty()) {
                 socketChannel.register(this.selector, SelectionKey.OP_WRITE);
