@@ -12,7 +12,7 @@ public class AddCurrencyAnalyzer implements CommandAnalyzer {
 
     @Override
     public boolean isValidCommand(String[] splittedUserInput) {
-        return splittedUserInput.length == 2 && keyword.equals(splittedUserInput[0]);
+        return splittedUserInput.length == 3 && keyword.equals(splittedUserInput[0]);
     }
 
     @Override
@@ -21,17 +21,16 @@ public class AddCurrencyAnalyzer implements CommandAnalyzer {
         if (Database.getUserStanding(client.getUsername()) == UserStanding.ADMIN) {
             Double targetAddCurrency;
             try{
-                targetAddCurrency = Double.parseDouble(splittedUserInput[1]);
+                targetAddCurrency = Double.parseDouble(splittedUserInput[2]);
             }
             catch (Exception e){
                 return ResponseType.INVALID_CURRENCY;
             }
-
-            String username = client.getUsername();
-            if (Database.doesUserExist(username)) {
-                Database.addUserCurrency(username, targetAddCurrency);
-                Double currency = Database.getUserCurrency(username);
-                client.addToQueue("Your currency is now: " + currency + " coins." );
+            String targetUsername = splittedUserInput[1];
+            if (Database.doesUserExist(targetUsername)) {
+                Database.addUserCurrency(targetUsername, targetAddCurrency);
+                Double currency = Database.getUserCurrency(targetUsername);
+                client.addToQueue(targetUsername + " currency is now: " + currency + " coins." );
                 return ResponseType.GENERAL_SUCCESS;
             }
             else {
