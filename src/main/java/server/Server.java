@@ -53,7 +53,7 @@ class Server {
         serverSocketChannel.close();
     }
 
-    private void run() throws Exception {
+    private void run() throws IOException, SQLException {
         while (!Thread.currentThread().isInterrupted()) {
             this.selector.select();
             Set<SelectionKey> keys = this.selector.selectedKeys();
