@@ -17,14 +17,6 @@ public class Client {
     private Queue<String> queuedMessages = new ArrayDeque<>();
     private UserStanding userStanding = null;
 
-    public double getCurrency() {
-        return currency;
-    }
-
-    public void addCurrency(double currency) {
-        this.currency += currency;
-    }
-
     public UserStanding getUserStanding() {
         return userStanding;
     }
@@ -67,10 +59,6 @@ public class Client {
 
     SocketChannel getSocketChannel() {
         return socketChannel;
-    }
-
-    public LoginStage getStage() {
-        return stage;
     }
 
     void setStageToLoggedIn() {

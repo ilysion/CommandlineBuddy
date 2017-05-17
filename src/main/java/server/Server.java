@@ -18,8 +18,6 @@ class Server {
 
     private final ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
     private final Selector selector = Selector.open();
-
-    private final Map<SocketChannel, byte[]> messages = new HashMap<>();
     private final Set<SocketChannel> channels = new HashSet<>();
     private final Set<Client> clients = new HashSet<>();
 
@@ -61,7 +59,7 @@ class Server {
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
                 if (key.isAcceptable()) {
-                    accept(key);
+                    accept();
                 } else if (key.isReadable()) {
                     read(key);
                 } else if (key.isWritable()) {
@@ -72,7 +70,7 @@ class Server {
         }
     }
 
-    private void accept(SelectionKey key) throws IOException {
+    private void accept() throws IOException {
         System.out.println("Accepting connection!");
 
         SocketChannel socketChannel = serverSocketChannel.accept();

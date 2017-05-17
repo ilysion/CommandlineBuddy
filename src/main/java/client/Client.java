@@ -1,7 +1,5 @@
 package client;
 
-import com.sun.xml.internal.fastinfoset.util.CharArray;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
