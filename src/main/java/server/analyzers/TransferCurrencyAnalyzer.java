@@ -6,9 +6,6 @@ import server.ServerProperties;
 import server.enums.ResponseType;
 import server.enums.UserStanding;
 
-/**
- * Created by ilysion on 17.05.2017.
- */
 public class TransferCurrencyAnalyzer implements CommandAnalyzer{
 
     private final String keyword = ServerProperties.getKeyword(this.getClass());
@@ -42,7 +39,7 @@ public class TransferCurrencyAnalyzer implements CommandAnalyzer{
                 }
                 Database.addUserCurrency(targetUsernameFrom, targetAddCurrency * -1);
                 Database.addUserCurrency(targetUsernameTo, targetAddCurrency);
-                Double currency = Database.getUserCurrency(targetUsernameTo );
+                Double currency = Database.getUserCurrency(targetUsernameFrom );
                 client.addToQueue("Your currency is now: " + currency + " coins." );
 
                 return ResponseType.GENERAL_SUCCESS;
